@@ -1,6 +1,6 @@
 # Homelab
 
-## `Required
+## Required
 
 - OpenTofu
 - Talosctl
