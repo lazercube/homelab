@@ -1,0 +1,47 @@
+machine:
+  network:
+    hostname: ${hostname}
+  nodeLabels:
+    topology.kubernetes.io/region: ${cluster_name}
+    topology.kubernetes.io/zone: ${node_name}
+
+cluster:
+  # Let workloads schedule on control planes
+  allowSchedulingOnControlPlanes: true
+
+  # Talos will not install a CNI – Cilium will
+  network:
+    cni:
+      name: none
+
+  # Turn off kube-proxy (Cilium replaces it)
+  proxy:
+    disabled: true
+
+  # Optional: Gateway API CRDs (you can remove these if you don’t care yet)
+  extraManifests:
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_gateways.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+  inlineManifests:
+    # ConfigMap containing Cilium values.yaml (passed from var.cilium.values)
+    - name: cilium-values
+      contents: |
+        ---
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: cilium-values
+          namespace: kube-system
+        data:
+          values.yaml: |-
+            ${indent(12, cilium_values)}
+
+    # Job that actually installs Cilium, taking values from the ConfigMap
+    - name: cilium-bootstrap
+      contents: |
+        ${indent(8, cilium_install)}

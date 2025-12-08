@@ -1,0 +1,10 @@
+kubeProxyReplacement: strict
+
+k8sServiceHost: ${cluster_endpoint}
+k8sServicePort: 6443
+
+ipam:
+  mode: kubernetes
+
+operator:
+  replicas: 1

@@ -1,6 +1,21 @@
 # MacOS system files
 .DS_Store
 
-# Terraform files
+# OpenTofu/Terraform local state and working dir
+.terraform/
+*.tfstate
+*.tfstate.*
 *.tfvars
 *.tfvars.json
+crash.log
+
+# Env files and secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.kubeconfig
+
+# Logs
+*.log

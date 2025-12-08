@@ -23,6 +23,5 @@ resource "proxmox_virtual_environment_download_file" "talos_image" {
   overwrite               = false
 
   url = "${local.factory_url}/image/${local.schematic_id}/${local.version}/${local.platform}-${local.arch}.raw.gz"
-
   file_name = "talos-${local.schematic_id}-${local.version}-${local.platform}-${local.arch}.img"
 }

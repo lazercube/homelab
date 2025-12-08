@@ -21,8 +21,8 @@ module "talos" {
   # Talos/Kubernetes cluster-level config
   cluster = {
     name            = "talos"
-    endpoint        = "192.168.50.100"   # API endpoint IP (ctrl-00)
-    gateway         = "192.168.50.1"     # your LAN gateway
+    endpoint        = "192.168.30.100"   # API endpoint IP (ctrl-00)
+    gateway         = "192.168.30.1"     # your LAN gateway
     talos_version   = "v1.7"
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
@@ -32,7 +32,7 @@ module "talos" {
     "ctrl-00" = {
       proxmox_node = "draco"            # maps to proxmox_nodes key
       machine_type = "controlplane"
-      ip           = "192.168.50.100"
+      ip           = "192.168.30.100"  # static IP for this node
       mac_address  = "BC:24:11:2E:C8:00"
       vm_id        = 800
       cpu          = 4
@@ -44,4 +44,14 @@ module "talos" {
 
   # pass proxmox_nodes through so module can resolve them
   proxmox_nodes = var.proxmox_nodes
+}
+
+output "talosconfig" {
+  value     = module.talos.client_configuration.talos_config
+  sensitive = true
+}
+
+output "kubeconfig" {
+  value     = module.talos.kube_config.kubeconfig_raw
+  sensitive = true
 }
