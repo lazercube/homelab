@@ -6,6 +6,7 @@ Homelab setup for provisioning a Talos-based Kubernetes cluster on Proxmox with 
 - `tofu` - OpenTofu CLI
 - `talosctl` - Talos CLI
 - `kubectl` - Kubernetes CLI
+- `kubeseal` - Sealed Secrets CLI
 
 ## Quick Start
 1. Set values in `tofu/proxmox.auto.tfvars`.

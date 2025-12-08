@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Upstream Proxmox CSI plugin release manifest
+  - https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/v0.16.0/docs/deploy/proxmox-csi-plugin.yml
+
+  # Local overrides
+  - proxmox-csi-config.yaml
+  - storage-class.yaml

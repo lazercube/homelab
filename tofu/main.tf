@@ -15,7 +15,7 @@ module "talos" {
   # Cilium bootstrap (we’ll wire the actual files later)
   cilium = {
     install = file("${path.module}/talos/inline-manifests/cilium-install.yaml")
-    values  = file("${path.module}/../kubernetes/cilium/values.yaml")
+    values  = file("${path.module}/../kubernetes/bootstrap/cilium/values.yaml")
   }
 
   # Talos/Kubernetes cluster-level config
