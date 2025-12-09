@@ -5,13 +5,12 @@
 .terraform/
 *.tfstate
 *.tfstate.*
-*.tfvars
-*.tfvars.json
 crash.log
 
 # Env files and secrets
 .env
 .env.*
+.envrc
 *.pem
 *.key
 *.crt
@@ -19,3 +18,7 @@ crash.log
 
 # Logs
 *.log
+
+# Temporary files
+.tmp/
+*.secret.yaml

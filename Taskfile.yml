@@ -1,0 +1,185 @@
+version: "3"
+
+vars:
+  TOFU_DIR: "tofu"
+  KUBECONFIG_FILE: "{{.TOFU_DIR}}/kubeconfig"
+  TALOSCONFIG_FILE: "{{.TOFU_DIR}}/talosconfig"
+
+tasks:
+  default:
+    cmds:
+      - task: help
+    silent: true
+
+  help:
+    desc: Show available tasks
+    cmds:
+      - |
+        echo "Homelab"
+        echo
+        echo "Prereqs:"
+        echo "  - .envrc with TF_VAR_proxmox_api_token set (direnv allow)"
+        echo "  - templates/secrets/proxmox-csi-secret.yaml.tmpl present"
+        echo
+        echo "Infra (OpenTofu / Talos / Proxmox):"
+        echo "  task infra:init            - Init OpenTofu (providers, backend)"
+        echo "  task infra:validate        - Check fmt + validate configuration"
+        echo "  task infra:plan            - Plan OpenTofu changes"
+        echo "  task infra:apply           - Apply OpenTofu (Proxmox, Talos, Cilium, CSI auth)"
+        echo "  task infra:configs         - Extract talosconfig + kubeconfig from outputs"
+        echo "  task csi:rotate-token      - Rotate Proxmox CSI token and reseal secret"
+        echo
+        echo "Secrets management:"
+        echo "  task secrets:seal NAME=<name>     - Seal a secret template by name"
+        echo "  task secrets:seal NAME=csi-secret - Seal Proxmox CSI Secret"
+        echo "  task secrets:seal-all             - Seal all templates under templates/secrets"
+        echo
+        echo "Kubernetes bootstrap:"
+        echo "  task k8s:validate           - Kustomize build sanity check for infra tree"
+        echo "  task k8s:sealed-secrets     - Install Sealed Secrets controller"
+        echo "  task k8s:argocd-bootstrap   - Install Argo CD + root Applications"
+        echo
+        echo "Full first-time bring-up:"
+        echo "  task cluster:bootstrap"
+    silent: true
+
+  env:check:
+    desc: Check local tooling and env are ready
+    cmds:
+      - |
+        command -v direnv >/dev/null || { echo "direnv not installed"; exit 1; }
+        command -v tofu   >/dev/null || { echo "tofu not installed"; exit 1; }
+        command -v kubectl >/dev/null || { echo "kubectl not installed"; exit 1; }
+        command -v kubeseal >/dev/null || { echo "kubeseal not installed"; exit 1; }
+        if [ -z "$TF_VAR_proxmox_api_token" ]; then
+          echo "TF_VAR_proxmox_api_token not set. Did you configure .envrc and run 'direnv allow'?";
+          exit 1;
+        fi
+        echo "Environment looks good."
+    silent: true
+
+  infra:init:
+    desc: Init OpenTofu in ./tofu
+    dir: "{{.TOFU_DIR}}"
+    cmds:
+      - tofu init
+    silent: true
+
+  infra:validate:
+    desc: Validate and fmt OpenTofu
+    dir: "{{.TOFU_DIR}}"
+    cmds:
+      - tofu fmt -check
+      - tofu validate
+    silent: true
+
+  infra:plan:
+    desc: Plan OpenTofu changes
+    dir: "{{.TOFU_DIR}}"
+    cmds:
+      - tofu plan
+    silent: true
+
+  infra:apply:
+    deps: [env:check]
+    desc: Apply OpenTofu (Proxmox infra, Talos nodes, Cilium bootstrap, CSI auth)
+    dir: "{{.TOFU_DIR}}"
+    cmds:
+      - tofu apply 
+    silent: true
+
+  infra:configs:
+    desc: Write talosconfig + kubeconfig from OpenTofu outputs
+    dir: "{{.TOFU_DIR}}"
+    cmds:
+      - tofu output -raw talosconfig > {{.TALOSCONFIG_FILE}}
+      - tofu output -raw kubeconfig  > {{.KUBECONFIG_FILE}}
+      - |
+        echo "Wrote:"
+        echo "  TALOSCONFIG={{.TALOSCONFIG_FILE}}"
+        echo "  KUBECONFIG={{.KUBECONFIG_FILE}}"
+    silent: true
+
+  csi:rotate-token:
+    desc: Rotate Proxmox CSI token and re-seal Secret
+    cmds:
+      - |
+        echo "Rotating CSI token in Proxmox via OpenTofu..."
+        cd "{{.TOFU_DIR}}" && tofu taint proxmox_virtual_environment_user_token.kubernetes_csi_token && tofu apply -var-file={{.TOFU_VARS}}
+      - task: infra:configs
+      - task: k8s:csi-secret
+      - |
+        echo
+        echo "CSI token rotated and SealedSecret updated."
+        echo "Don't forget to commit the new sealedsecret-proxmox-csi.yaml."
+    silent: true
+
+  k8s:validate:
+    desc: Kustomize build for infra tree (quick sanity check)
+    cmds:
+      - kustomize build kubernetes/infra >/dev/null
+    silent: true
+
+  k8s:sealed-secrets:
+    desc: Install Sealed Secrets controller (kubernetes/infra/sealed-secrets)
+    cmds:
+      - |
+        if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
+          echo "ERROR: kubeconfig not found. Run: task infra:configs";
+          exit 1;
+        fi
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/sealed-secrets
+        echo "Sealed Secrets controller bootstrapped."
+    silent: true
+
+  secrets:seal:
+    desc: Seal a secret template by name (NAME=<secret-name>)
+    cmds:
+      - |
+        if [ -z "{{.NAME}}" ]; then
+          echo "Usage: task secrets:seal NAME=<secret-name>";
+          exit 1;
+        fi
+        ./scripts/seal-secret.sh "{{.NAME}}"
+    silent: true
+
+  secrets:seal-all:
+    desc: Seal all secret templates under templates/secrets
+    cmds:
+      - |
+        for tmpl in templates/secrets/*.yaml.tmpl; do
+          name=$(basename "$tmpl" .yaml.tmpl)
+          echo "==> Sealing $name"
+          ./scripts/seal-secret.sh "$name"
+        done
+    silent: true
+
+  k8s:argocd-bootstrap:
+    desc: Install Argo CD and root Applications (homelab-infra, homelab-apps)
+    cmds:
+      - |
+        if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
+          echo "ERROR: kubeconfig not found. Run: task infra:configs";
+          exit 1;
+        fi
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/argocd
+        echo "Argo CD + homelab-infra + homelab-apps bootstrapped."
+        echo "Argo CD will now sync:"
+        echo "  - kubernetes/infra"
+        echo "  - kubernetes/apps"
+    silent: true
+
+  cluster:bootstrap:
+    desc: Run a full initial cluster bootstrap (infra + k8s bootstrap)
+    cmds:
+      - task: env:check
+      - task: infra:init
+      - task: infra:validate
+      - task: infra:apply
+      - task: infra:configs
+      - task: k8s:sealed-secrets
+      - task: secrets:seal
+        vars:
+          NAME: csi-secret
+      - task: k8s:argocd-bootstrap
+    silent: true

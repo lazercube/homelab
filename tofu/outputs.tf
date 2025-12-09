@@ -1,3 +1,7 @@
+output "proxmox_endpoint" {
+  value = var.proxmox_cluster.endpoint
+}
+
 output "talosconfig" {
   value     = module.talos.client_configuration.talos_config
   sensitive = true
