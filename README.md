@@ -1,10 +1,6 @@
 # Homelab
 
-Talos-based Kubernetes on Proxmox, provisioned with OpenTofu and bootstrapped with Argo CD.
-
-## Requirements
-- `direnv` with `.envrc` setting `TF_VAR_proxmox_api_token`
-- CLIs: `tofu`, `kubectl`, `kubeseal`
+My personal homelab: a local Proxmox cluster running Talos-based Kubernetes, managed with OpenTofu and Argo CD.
 
 ## Setup
 1. Configure Proxmox and cluster values in `tofu/proxmox.auto.tfvars`.
@@ -14,7 +10,7 @@ Talos-based Kubernetes on Proxmox, provisioned with OpenTofu and bootstrapped wi
 	 ```
 
 ## Bootstrap
-Provision infra, write configs, install controllers, and Argo CD:
+Provision infra, write configs, install controllers, and setup kubernetes:
 ```zsh
 task cluster:bootstrap
 ```
