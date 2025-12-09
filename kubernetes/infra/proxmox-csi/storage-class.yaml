@@ -1,15 +1,34 @@
+# Fast NVMe-ish storage backed by Proxmox 'vmstore'
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: proxmox-csi
-allowVolumeExpansion: true
+  name: proxmox-fast
+provisioner: csi.proxmox.sinextra.dev
 parameters:
+  storage: vmstore
   csi.storage.k8s.io/fstype: ext4
-  storage: vmstore # proxmox storage name
   cache: writethrough
   ssd: "true"
-mountOptions:
-  - noatime
-provisioner: csi.proxmox.sinextra.dev
+allowVolumeExpansion: true
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - noatime
+
+---
+# Slower / larger ZFS pool backed by Proxmox 'bulkzfs'
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: proxmox-bulk
+provisioner: csi.proxmox.sinextra.dev
+parameters:
+  storage: bulkzfs
+  csi.storage.k8s.io/fstype: ext4
+  cache: writethrough
+  ssd: "false"
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - noatime
