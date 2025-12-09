@@ -9,7 +9,7 @@ proxmox_cluster = {
 # Define each Proxmox node in the cluster you plan to use
 proxmox_nodes = {
   draco = {
-    name         = "pve"
+    name         = "draco"
     datastore_id = "vmstore"
   }
 }
