@@ -14,7 +14,6 @@ data "talos_client_configuration" "this" {
 # Per-node machine config
 data "talos_machine_configuration" "this" {
   for_each = var.nodes
-
   cluster_name     = var.cluster.name
   cluster_endpoint = var.cluster.endpoint
   talos_version    = var.cluster.talos_version
@@ -41,13 +40,10 @@ data "talos_machine_configuration" "this" {
 # Apply Talos configuration
 resource "talos_machine_configuration_apply" "this" {
   depends_on = [proxmox_virtual_environment_vm.this]
-
   for_each = var.nodes
-
   node                        = each.value.ip
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.this[each.key].machine_configuration
-
   # Re-apply config whenever the VM is recreated/changed
   lifecycle {
     replace_triggered_by = [proxmox_virtual_environment_vm.this[each.key]]
@@ -56,9 +52,8 @@ resource "talos_machine_configuration_apply" "this" {
 
 # Bootstrap Talos
 resource "talos_machine_bootstrap" "this" {
-  # first control-plane node
   node                 = [for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]
-  endpoint             = var.cluster.endpoint
+  endpoint             = "https://${[for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]}:50000"
   client_configuration = talos_machine_secrets.this.client_configuration
 }
 
@@ -75,7 +70,7 @@ data "talos_cluster_health" "this" {
   endpoints            = data.talos_client_configuration.this.endpoints
 
   timeouts = {
-    read = "10m"
+    read = "1m"
   }
 }
 
@@ -86,7 +81,7 @@ resource "talos_cluster_kubeconfig" "this" {
   ]
 
   node                 = [for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]
-  endpoint             = var.cluster.endpoint
+  endpoint             = "https://${[for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]}:50000"
   client_configuration = talos_machine_secrets.this.client_configuration
 
   timeouts = {

@@ -23,7 +23,7 @@ module "talos" {
     name            = "talos"
     endpoint        = "https://192.168.30.100:6443" # Kubernetes API endpoint (ctrl-00)
     gateway         = "192.168.30.1"                # your LAN gateway
-    talos_version   = "v1.7"
+    talos_version   = "v1.11.5"
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
 
