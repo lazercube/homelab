@@ -1,0 +1,26 @@
+name: Validate PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: homelab-pr-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate-pr-title:
+    uses: lazercube/github-workflows/.github/workflows/validate-pr-title.yaml@main
+    permissions:
+      pull-requests: write
