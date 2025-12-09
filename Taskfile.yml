@@ -51,6 +51,7 @@ tasks:
         command -v tofu   >/dev/null || { echo "tofu not installed"; exit 1; }
         command -v kubectl >/dev/null || { echo "kubectl not installed"; exit 1; }
         command -v kubeseal >/dev/null || { echo "kubeseal not installed"; exit 1; }
+        command -v kustomize >/dev/null || { echo "kustomize not installed"; exit 1; }
         if [ -z "$TF_VAR_proxmox_api_token" ]; then
           echo "TF_VAR_proxmox_api_token not set. Did you configure .envrc and run 'direnv allow'?";
           exit 1;
