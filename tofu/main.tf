@@ -46,12 +46,8 @@ module "talos" {
   proxmox_nodes = var.proxmox_nodes
 }
 
-output "talosconfig" {
-  value     = module.talos.client_configuration.talos_config
-  sensitive = true
-}
+module "proxmox_csi_auth" {
+  source = "./bootstrap/proxmox-csi-auth"
 
-output "kubeconfig" {
-  value     = module.talos.kube_config.kubeconfig_raw
-  sensitive = true
+  cluster_name = var.proxmox_cluster.cluster_name
 }
