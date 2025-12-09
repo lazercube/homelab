@@ -32,13 +32,36 @@ module "talos" {
     "ctrl-00" = {
       proxmox_node  = "draco" # maps to proxmox_nodes key
       machine_type  = "controlplane"
-      ip            = "192.168.30.100" # static IP for this node
+      ip            = "192.168.30.100"
       mac_address   = "BC:24:11:2E:C8:00"
       vm_id         = 800
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 6144
+      disk  = 64
       # datastore_id optional (we default from proxmox_nodes)
       # update/igpu use defaults
+    }
+
+    "work-00" = {
+      proxmox_node  = "draco"
+      machine_type  = "worker"
+      ip            = "192.168.30.110"
+      mac_address   = "BC:24:11:2E:08:00"
+      vm_id         = 810
+      cpu           = 4
+      ram_dedicated = 11264
+      disk  = 128
+    }
+
+    "work-01" = {
+      proxmox_node  = "draco"
+      machine_type  = "worker"
+      ip            = "192.168.30.111"
+      mac_address   = "BC:24:11:2E:08:01"
+      vm_id         = 811
+      cpu           = 4
+      ram_dedicated = 11264
+      disk  = 128
     }
   }
 

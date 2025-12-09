@@ -5,42 +5,31 @@ Architecture overview of the Homelab setup using Proxmox, Talos, and Kubernetes.
 ## Infrastructure (Proxmox + Talos)
 ```mermaid
 flowchart LR
-  subgraph Proxmox Cluster
-    PVE1[Proxmox Node 1]
-    PVE2[Proxmox Node 2]
-    PVE3[Proxmox Node 3]
+  subgraph Proxmox Cluster (draco)
+    PVE1[Proxmox Node]
   end
 
   subgraph Talos VMs
     CP1[Control Plane VM]
-    CP2[Control Plane VM]
-    CP3[Control Plane VM]
     W1[Worker VM]
     W2[Worker VM]
-    W3[Worker VM]
   end
 
   PVE1 --- CP1
-  PVE2 --- CP2
-  PVE3 --- CP3
   PVE1 --- W1
-  PVE2 --- W2
-  PVE3 --- W3
+  PVE1 --- W2
 
   subgraph Kubernetes Layer
     K8s[(Kubernetes Cluster)]
   end
 
   CP1 --> K8s
-  CP2 --> K8s
-  CP3 --> K8s
   W1  --> K8s
   W2  --> K8s
-  W3  --> K8s
 ```
 
 Notes
-- Proxmox nodes host Talos VMs (control plane and workers).
+- Proxmox cluster `draco` hosts Talos VMs (1 control plane, 2 workers).
 - The Talos VMs together form the Kubernetes cluster.
 - Infra defined in `tofu/` and `tofu/talos/`.
 
