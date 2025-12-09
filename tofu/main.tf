@@ -37,7 +37,7 @@ module "talos" {
       vm_id         = 800
       cpu           = 4
       ram_dedicated = 6144
-      disk  = 64
+      disk          = 64
       # datastore_id optional (we default from proxmox_nodes)
       # update/igpu use defaults
     }
@@ -50,7 +50,7 @@ module "talos" {
       vm_id         = 810
       cpu           = 4
       ram_dedicated = 11264
-      disk  = 128
+      disk          = 128
     }
 
     "work-01" = {
@@ -61,7 +61,7 @@ module "talos" {
       vm_id         = 811
       cpu           = 4
       ram_dedicated = 11264
-      disk  = 128
+      disk          = 128
     }
   }
 
