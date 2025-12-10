@@ -15,7 +15,7 @@ data "talos_client_configuration" "this" {
 data "talos_machine_configuration" "this" {
   for_each = var.nodes
   cluster_name     = var.cluster.name
-  cluster_endpoint = var.cluster.endpoint
+  cluster_endpoint = "https://${var.cluster.endpoint}:6443"
   talos_version    = var.cluster.talos_version
   machine_type     = each.value.machine_type
   machine_secrets  = talos_machine_secrets.this.machine_secrets
@@ -52,8 +52,8 @@ resource "talos_machine_configuration_apply" "this" {
 
 # Bootstrap Talos
 resource "talos_machine_bootstrap" "this" {
-  node                 = [for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]
-  endpoint             = "https://${[for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]}:50000"
+  node                 = var.cluster.endpoint
+  endpoint             = "https://${var.cluster.endpoint}:50000"
   client_configuration = talos_machine_secrets.this.client_configuration
 }
 
@@ -79,9 +79,8 @@ resource "talos_cluster_kubeconfig" "this" {
     talos_machine_bootstrap.this,
     data.talos_cluster_health.this
   ]
-
-  node                 = [for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]
-  endpoint             = "https://${[for _, n in var.nodes : n.ip if n.machine_type == "controlplane"][0]}:50000"
+  node                 = var.cluster.endpoint
+  endpoint             = "https://${var.cluster.endpoint}:50000"
   client_configuration = talos_machine_secrets.this.client_configuration
 
   timeouts = {

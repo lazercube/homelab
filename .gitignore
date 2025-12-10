@@ -22,3 +22,5 @@ crash.log
 # Temporary files
 .tmp/
 *.secret.yaml
+
+talosctl/
