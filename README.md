@@ -15,7 +15,8 @@ My personal homelab: A local Proxmox cluster running Talos-based Kubernetes, man
 ## Bootstrap
 Provision infra, write configs, install controllers, and setup kubernetes:
 ```zsh
-task cluster:bootstrap
+task bootstrap:init
+task boostrap:apply
 ```
 
 ## Day‑to‑day

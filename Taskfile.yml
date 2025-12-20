@@ -41,7 +41,7 @@ tasks:
         echo
         echo "Full first-time bring-up:"
         echo "  task bootstrap:init   - Stage 1: Infra + seal secrets (then commit)"
-        echo "  task bootstrap:gitops - Stage 2: Install ArgoCD (after git push)"
+        echo "  task bootstrap:apply  - Stage 2: Install ArgoCD (after git push)"
     silent: true
 
   env:check:
@@ -220,11 +220,11 @@ tasks:
         echo "     git commit -m 'Add sealed secrets'"
         echo "     git push"
         echo
-        echo "  2. Bootstrap GitOps:"
-        echo "     task bootstrap:gitops"
+        echo "  2. Bootstrap ArgoCD:"
+        echo "     task bootstrap:apply"
     silent: true
 
-  bootstrap:gitops:
+  bootstrap:apply:
     desc: Bootstrap cluster - Stage 2 (install ArgoCD after secrets are committed)
     cmds:
       - |
