@@ -8,3 +8,4 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   - applicationset-infra.yaml
   - applicationset-apps.yaml
+  - ingress.yaml
