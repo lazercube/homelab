@@ -1,6 +1,9 @@
 # Homelab
 
-My personal homelab: a local Proxmox cluster running Talos-based Kubernetes, managed with OpenTofu and Argo CD.
+My personal homelab: A local Proxmox cluster running Talos-based Kubernetes, managed with OpenTofu and Argo CD.
+
+> [!NOTE]
+> This is a showcase of my homelab setup, not a step-by-step guide. Configuration details are specific to my environment and may require adaptation for your use case.
 
 ## Setup
 1. Configure Proxmox and cluster values in `tofu/proxmox.auto.tfvars`.
@@ -37,3 +40,9 @@ task cluster:bootstrap
 
 ## Learn more
 - See `wiki/` for architecture, operations, and troubleshooting.
+
+## Acknowledgements
+
+This setup is based on ideas and configurations from:
+- [Talos cluster on Proxmox with Terraform](https://olav.ninja/talos-cluster-on-proxmox-with-terraform) by Olav
+- [Talos on Proxmox with OpenTofu](https://blog.stonegarden.dev/articles/2024/08/talos-proxmox-tofu) by Stonegarden
