@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium-upgrade
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: cilium
+      repoURL: https://helm.cilium.io
+      targetRevision: 1.18.5
+      helm:
+        releaseName: cilium
+        valueFiles:
+          - $values/kubernetes/infra/network/cilium/values.yaml
+    - repoURL: https://github.com/lazercube/homelab.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ip-pool.yaml
   - announce.yaml
+  - application.yaml
