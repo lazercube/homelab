@@ -21,8 +21,8 @@ module "talos" {
   # Talos/Kubernetes cluster-level config
   cluster = {
     name            = "talos"
-    endpoint        = "192.168.30.100"              # Control plane IP
-    gateway         = "192.168.30.1"                # your LAN gateway
+    endpoint        = "192.168.30.100" # Control plane IP
+    gateway         = "192.168.30.1"   # your LAN gateway
     talos_version   = "v1.11.5"
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
