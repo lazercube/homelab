@@ -93,8 +93,8 @@ tasks:
     desc: Write talosconfig + kubeconfig from OpenTofu outputs
     dir: "{{.TOFU_DIR}}"
     cmds:
-      - tofu output -raw talosconfig > {{.TALOSCONFIG_FILE}}
-      - tofu output -raw kubeconfig  > {{.KUBECONFIG_FILE}}
+      - tofu output -raw talosconfig > ../{{.TALOSCONFIG_FILE}}
+      - tofu output -raw kubeconfig  > ../{{.KUBECONFIG_FILE}}
       - |
         echo "Wrote:"
         echo "  TALOSCONFIG={{.TALOSCONFIG_FILE}}"
@@ -133,6 +133,21 @@ tasks:
         echo "Sealed Secrets controller bootstrapped."
     silent: true
 
+  k8s:argocd-bootstrap:
+    desc: Install Argo CD and root Applications (homelab-infra, homelab-apps)
+    cmds:
+      - |
+        if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
+          echo "ERROR: kubeconfig not found. Run: task infra:configs";
+          exit 1;
+        fi
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/argocd
+        echo "Argo CD + homelab-infra + homelab-apps bootstrapped."
+        echo "Argo CD will now sync:"
+        echo "  - kubernetes/infra"
+        echo "  - kubernetes/apps"
+    silent: true
+
   secrets:seal:
     desc: Seal a secret template by name (NAME=<secret-name>)
     cmds:
@@ -153,21 +168,6 @@ tasks:
           echo "==> Sealing $name"
           ./scripts/seal-secret.sh "$name"
         done
-    silent: true
-
-  k8s:argocd-bootstrap:
-    desc: Install Argo CD and root Applications (homelab-infra, homelab-apps)
-    cmds:
-      - |
-        if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
-          echo "ERROR: kubeconfig not found. Run: task infra:configs";
-          exit 1;
-        fi
-        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/argocd
-        echo "Argo CD + homelab-infra + homelab-apps bootstrapped."
-        echo "Argo CD will now sync:"
-        echo "  - kubernetes/infra"
-        echo "  - kubernetes/apps"
     silent: true
 
   cluster:bootstrap:

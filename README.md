@@ -31,7 +31,7 @@ task cluster:bootstrap
 	```
 - Seal secrets:
 	```zsh
-	task secrets:seal NAME=csi-secret
+	task secrets:seal NAME=proxmox-csi
 	task secrets:seal-all
 	```
 

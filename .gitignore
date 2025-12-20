@@ -23,4 +23,9 @@ crash.log
 .tmp/
 *.secret.yaml
 
+# Talos CLI config
 talosctl/
+
+# Exported configs
+kubeconfig
+talosconfig
