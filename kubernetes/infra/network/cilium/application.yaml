@@ -22,13 +22,7 @@ spec:
   syncPolicy:
     automated:
       prune: false
-      selfHeal: true
+      selfHeal: false
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
-  ignoreDifferences:
-    - group: ""
-      kind: Secret
-      name: sh.helm.release.v1.cilium.*
-      jsonPointers:
-        - /data
