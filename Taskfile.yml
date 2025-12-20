@@ -141,7 +141,12 @@ tasks:
           echo "ERROR: kubeconfig not found. Run: task infra:configs";
           exit 1;
         fi
+        echo "Installing Argo CD..."
         KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/argocd
+        
+        echo "Waiting for Argo CD CRDs to be established..."
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl wait --for condition=established --timeout=60s crd/applications.argoproj.io
+        
         echo "Argo CD + homelab-infra + homelab-apps bootstrapped."
         echo "Argo CD will now sync:"
         echo "  - kubernetes/infra"
