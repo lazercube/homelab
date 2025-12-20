@@ -23,3 +23,22 @@ spec:
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      namespace: kube-system
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      namespace: cilium-secrets
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Service
+      name: cilium-ingress
+      namespace: kube-system
+      jsonPointers:
+        - /spec/clusterIP
+        - /spec/clusterIPs
