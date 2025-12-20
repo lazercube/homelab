@@ -43,13 +43,10 @@ mkdir -p "${SEALED_OUT_DIR}"
 case "$NAME" in
   proxmox-csi)
     # Uses Tofu outputs for token + endpoint + region
-    (
-      cd "${ROOT_DIR}/tofu"
-      export TOKEN_ID="$(tofu output -raw proxmox_csi_auth_token_id)"
-      export TOKEN_SECRET="$(tofu output -raw proxmox_csi_auth_token_secret)"
-      export REGION="$(tofu output -raw proxmox_csi_auth_region)"
-      export PROXMOX_API_URL="$(tofu output -raw proxmox_endpoint)"
-    )
+    export TOKEN_ID="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_token_id)"
+    export TOKEN_SECRET="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_token_secret)"
+    export REGION="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_region)"
+    export PROXMOX_API_URL="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_endpoint)"
     ;;
   *)
     echo "ERROR: don't know how to populate env vars for secret '${NAME}'."
