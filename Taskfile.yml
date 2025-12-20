@@ -118,7 +118,15 @@ tasks:
   k8s:validate:
     desc: Kustomize build for infra tree (quick sanity check)
     cmds:
-      - kustomize build kubernetes/infra >/dev/null
+      - |
+        echo "Validating infra components..."
+        for dir in kubernetes/infra/*/; do
+          if [ -f "${dir}kustomization.yaml" ] || [ -f "${dir}kustomization.yml" ]; then
+            echo "  ✓ $(basename "$dir")"
+            kustomize build "$dir" >/dev/null
+          fi
+        done
+        echo "All components valid."
     silent: true
 
   k8s:sealed-secrets:
