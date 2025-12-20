@@ -31,16 +31,17 @@ tasks:
         echo
         echo "Secrets management:"
         echo "  task secrets:seal NAME=<name>     - Seal a secret template by name"
-        echo "  task secrets:seal NAME=csi-secret - Seal Proxmox CSI Secret"
+        echo "  task secrets:seal NAME=proxmox-csi - Seal Proxmox CSI Secret"
         echo "  task secrets:seal-all             - Seal all templates under templates/secrets"
         echo
         echo "Kubernetes bootstrap:"
         echo "  task k8s:validate           - Kustomize build sanity check for infra tree"
         echo "  task k8s:sealed-secrets     - Install Sealed Secrets controller"
-        echo "  task k8s:argocd-bootstrap   - Install Argo CD + root Applications"
+        echo "  task k8s:argocd-bootstrap   - Install Argo CD + ApplicationSets"
         echo
         echo "Full first-time bring-up:"
-        echo "  task cluster:bootstrap"
+        echo "  task bootstrap:init   - Stage 1: Infra + seal secrets (then commit)"
+        echo "  task bootstrap:gitops - Stage 2: Install ArgoCD (after git push)"
     silent: true
 
   env:check:
@@ -116,13 +117,27 @@ tasks:
     silent: true
 
   k8s:validate:
-    desc: Kustomize build for infra tree (quick sanity check)
+    desc: Kustomize build for bootstrap, infra, and apps trees (quick sanity check)
     cmds:
       - |
-        echo "Validating infra components..."
+        echo "Validating bootstrap..."
+        for dir in kubernetes/bootstrap/*/; do
+          if [ -f "${dir}kustomization.yaml" ] || [ -f "${dir}kustomization.yml" ]; then
+            echo "  ✓ bootstrap/$(basename "$dir")"
+            kustomize build "$dir" >/dev/null
+          fi
+        done
+        echo "Validating infra..."
         for dir in kubernetes/infra/*/; do
           if [ -f "${dir}kustomization.yaml" ] || [ -f "${dir}kustomization.yml" ]; then
-            echo "  ✓ $(basename "$dir")"
+            echo "  ✓ infra/$(basename "$dir")"
+            kustomize build "$dir" >/dev/null
+          fi
+        done
+        echo "Validating apps..."
+        for dir in kubernetes/apps/*/; do
+          if [ -f "${dir}kustomization.yaml" ] || [ -f "${dir}kustomization.yml" ]; then
+            echo "  ✓ apps/$(basename "$dir")"
             kustomize build "$dir" >/dev/null
           fi
         done
@@ -130,19 +145,19 @@ tasks:
     silent: true
 
   k8s:sealed-secrets:
-    desc: Install Sealed Secrets controller (kubernetes/infra/sealed-secrets)
+    desc: Install Sealed Secrets controller (kubernetes/bootstrap/sealed-secrets)
     cmds:
       - |
         if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
           echo "ERROR: kubeconfig not found. Run: task infra:configs";
           exit 1;
         fi
-        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/sealed-secrets
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/bootstrap/sealed-secrets
         echo "Sealed Secrets controller bootstrapped."
     silent: true
 
   k8s:argocd-bootstrap:
-    desc: Install Argo CD and root Applications (homelab-infra, homelab-apps)
+    desc: Install Argo CD and root Application (homelab-root)
     cmds:
       - |
         if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
@@ -150,14 +165,14 @@ tasks:
           exit 1;
         fi
         echo "Installing Argo CD..."
-        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/infra/argocd
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/bootstrap/argocd
         
         echo "Waiting for Argo CD CRDs to be established..."
         KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl wait --for condition=established --timeout=60s crd/applications.argoproj.io
         
-        echo "Argo CD + homelab-infra + homelab-apps bootstrapped."
+        echo "Argo CD bootstrapped."
         echo "Argo CD will now sync:"
-        echo "  - kubernetes/infra"
+        echo "  - kubernetes/infra (controllers, storage, network, monitoring)"
         echo "  - kubernetes/apps"
     silent: true
 
@@ -183,8 +198,8 @@ tasks:
         done
     silent: true
 
-  cluster:bootstrap:
-    desc: Run a full initial cluster bootstrap (infra + k8s bootstrap)
+  bootstrap:init:
+    desc: Bootstrap cluster - Stage 1 (infra + seal secrets, then commit before stage 2)
     cmds:
       - task: env:check
       - task: infra:init
@@ -192,8 +207,41 @@ tasks:
       - task: infra:apply
       - task: infra:configs
       - task: k8s:sealed-secrets
-      - task: secrets:seal
-        vars:
-          NAME: csi-secret
+      - task: secrets:seal-all
+      - |
+        echo
+        echo "=========================================="
+        echo "Stage 1 complete!"
+        echo "=========================================="
+        echo
+        echo "Next steps:"
+        echo "  1. Review and commit the sealed secrets:"
+        echo "     git add kubernetes/infra/storage/proxmox-csi/sealedsecret-*.yaml"
+        echo "     git commit -m 'Add sealed secrets'"
+        echo "     git push"
+        echo
+        echo "  2. Bootstrap GitOps:"
+        echo "     task bootstrap:gitops"
+    silent: true
+
+  bootstrap:gitops:
+    desc: Bootstrap cluster - Stage 2 (install ArgoCD after secrets are committed)
+    cmds:
+      - |
+        if [ ! -f "{{.KUBECONFIG_FILE}}" ]; then
+          echo "ERROR: kubeconfig not found. Run: task bootstrap:init first";
+          exit 1;
+        fi
       - task: k8s:argocd-bootstrap
+      - |
+        echo
+        echo "=========================================="
+        echo "Cluster bootstrap complete!"
+        echo "=========================================="
+        echo
+        echo "ArgoCD is now managing your cluster."
+        echo "Access ArgoCD UI:"
+        echo "  kubectl port-forward svc/argocd-server -n argocd 8080:443"
+        echo "  Initial password:"
+        echo "  kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
     silent: true

@@ -12,7 +12,18 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 TEMPLATE="${ROOT_DIR}/templates/secrets/${NAME}.yaml.tmpl"
 PLAIN_OUT="${ROOT_DIR}/.tmp/${NAME}.secret.yaml"
-SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/${NAME}"
+
+# Map secret names to their destination paths in the managed infra
+case "$NAME" in
+  proxmox-csi)
+    SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/storage/proxmox-csi"
+    ;;
+  *)
+    # Default fallback for other secrets
+    SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/${NAME}"
+    ;;
+esac
+
 SEALED_OUT="${SEALED_OUT_DIR}/sealedsecret-${NAME}.yaml"
 KUBECONFIG_FILE="${ROOT_DIR}/tofu/kubeconfig"
 
