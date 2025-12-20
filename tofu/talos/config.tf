@@ -70,7 +70,7 @@ data "talos_cluster_health" "this" {
   endpoints            = data.talos_client_configuration.this.endpoints
 
   timeouts = {
-    read = "1m"
+    read = "10m" # It can take a while for the cluster to become healthy
   }
 }
 
@@ -84,6 +84,6 @@ resource "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
 
   timeouts = {
-    read = "1m"
+    read = "2m"
   }
 }
