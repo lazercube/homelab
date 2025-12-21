@@ -4,11 +4,11 @@ metadata:
   name: argocd-server
   namespace: argocd
   annotations:
-    ingress.cilium.io/tls-passthrough: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: cilium
   rules:
-    - host: argocd.home.lab
+    - host: argocd.localcloud.network
       http:
         paths:
           - path: /
@@ -17,7 +17,8 @@ spec:
               service:
                 name: argocd-server
                 port:
-                  name: https
+                  number: 80
   tls:
     - hosts:
-        - argocd.home.lab
+        - argocd.localcloud.network
+      secretName: argocd-tls

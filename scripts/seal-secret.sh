@@ -18,6 +18,12 @@ case "$NAME" in
   proxmox-csi)
     SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/storage/proxmox-csi"
     ;;
+  cloudflare-cert-manager)
+    SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/network/cert-manager"
+    ;;
+  cloudflare-dns)
+    SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/network/dns"
+    ;;
   *)
     # Default fallback for other secrets
     SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/${NAME}"
@@ -47,6 +53,22 @@ case "$NAME" in
     export TOKEN_SECRET="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_token_secret)"
     export REGION="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_region)"
     export PROXMOX_API_URL="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_endpoint)"
+    ;;
+  cloudflare-api-token)
+    # Reads CLOUDFLARE_API_TOKEN from environment
+    if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+      echo "ERROR: CLOUDFLARE_API_TOKEN environment variable not set."
+      echo "Set it with: export CLOUDFLARE_API_TOKEN='your-token-here'"
+      exit 1
+    fi
+    ;;
+  cloudflare-api-token-external-dns)
+    # Reads CLOUDFLARE_API_TOKEN from environment
+    if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+      echo "ERROR: CLOUDFLARE_API_TOKEN environment variable not set."
+      echo "Set it with: export CLOUDFLARE_API_TOKEN='your-token-here'"
+      exit 1
+    fi
     ;;
   *)
     echo "ERROR: don't know how to populate env vars for secret '${NAME}'."
