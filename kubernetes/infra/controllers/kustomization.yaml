@@ -3,4 +3,5 @@ kind: Kustomization
 
 # Infrastructure controllers
 # Note: sealed-secrets is in bootstrap/ as it's a prerequisite
-resources: []
+resources:
+  - argocd/
