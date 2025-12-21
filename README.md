@@ -1,3 +1,5 @@
+### [Network](192.168.1.1) │ [Proxmox](https://192.168.30.10:8006) | [ArgoCD](https://argocd.localcloud.network)
+
 # Homelab
 
 My personal homelab: A local Proxmox cluster running Talos-based Kubernetes, managed with OpenTofu and Argo CD.
