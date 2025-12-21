@@ -22,7 +22,6 @@ spec:
             - --source=ingress
             - --domain-filter=localcloud.network
             - --provider=cloudflare
-            - --cloudflare-proxied=false
           env:
             - name: CF_API_TOKEN
               valueFrom:
