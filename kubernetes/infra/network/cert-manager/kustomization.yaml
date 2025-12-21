@@ -10,35 +10,19 @@ resources:
 
 # Fix for https://github.com/cert-manager/cert-manager/issues/6716
 # When namespace: is set, kustomize moves leader election RBAC from kube-system
-# to cert-manager namespace, so we need to update the leader election args
+# to cert-manager namespace, so we need to configure leader election namespace
 patches:
   - target:
       kind: Deployment
       name: cert-manager
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-          - --v=2
-          - --cluster-resource-namespace=$(POD_NAMESPACE)
-          - --leader-election-namespace=cert-manager
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --leader-election-namespace=cert-manager
   - target:
       kind: Deployment
       name: cert-manager-cainjector
     patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-          - --v=2
-          - --leader-election-namespace=cert-manager
-  - target:
-      kind: Deployment
-      name: cert-manager-webhook
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-          - --v=2
-          - --dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)
-          - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
-          - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.$(POD_NAMESPACE),cert-manager-webhook.$(POD_NAMESPACE).svc
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --leader-election-namespace=cert-manager
