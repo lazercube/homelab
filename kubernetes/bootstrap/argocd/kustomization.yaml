@@ -6,6 +6,15 @@ namespace: argocd
 resources:
   - namespace.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-  - configmap.yaml
   - applicationset-infra.yaml
   - applicationset-apps.yaml
+
+# Configure ArgoCD server to run without TLS (ingress terminates TLS)
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-cmd-params-cm
+      data:
+        server.insecure: "true"
