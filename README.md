@@ -1,4 +1,4 @@
-### [Network](https://192.168.1.1) │ [Proxmox](https://192.168.30.10:8006) | [ArgoCD](https://argocd.localcloud.network)
+<a href="https://192.168.1.1" target="_blank">Network</a> │ <a href="https://192.168.30.10:8006" target="_blank">Proxmox</a> | <a href="https://argocd.localcloud.network" target="_blank">ArgoCD</a>
 
 # Homelab
 
