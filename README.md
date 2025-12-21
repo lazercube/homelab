@@ -1,4 +1,4 @@
-### [Network](192.168.1.1) │ [Proxmox](https://192.168.30.10:8006) | [ArgoCD](https://argocd.localcloud.network)
+### [Network](https://192.168.1.1) │ [Proxmox](https://192.168.30.10:8006) | [ArgoCD](https://argocd.localcloud.network)
 
 # Homelab
 
