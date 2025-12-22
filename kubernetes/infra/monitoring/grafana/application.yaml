@@ -1,50 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana
+  name: grafana-operator
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://grafana.github.io/helm-charts
-    chart: grafana
-    targetRevision: 8.8.2
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: grafana-operator
+    targetRevision: 4.10.2
     helm:
       valuesObject:
-        # Use sealed secret for admin credentials
-        admin:
-          existingSecret: grafana-admin
-          userKey: admin-user
-          passwordKey: admin-password
-        
-        # Persistent storage for dashboards and settings
-        persistence:
-          enabled: true
-          size: 5Gi
-        
-        # Grafana data sources
-        datasources:
-          datasources.yaml:
-            apiVersion: 1
-            datasources:
-              - name: Prometheus
-                type: prometheus
-                url: http://prometheus-kube-prometheus-prometheus.monitoring:9090
-                access: proxy
-                isDefault: true
-        
-        # Ingress configuration
-        ingress:
-          enabled: true
-          ingressClassName: cilium
-          hosts:
-            - grafana.localcloud.network
-          annotations:
-            cert-manager.io/cluster-issuer: letsencrypt-prod
-          tls:
-            - secretName: grafana-tls
-              hosts:
-                - grafana.localcloud.network
+        operator:
+          watchNamespace: monitoring
   
   destination:
     server: https://kubernetes.default.svc
