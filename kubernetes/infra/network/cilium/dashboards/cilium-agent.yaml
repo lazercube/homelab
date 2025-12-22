@@ -10,6 +10,4 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-  grafanaCom:
-    id: 20625
-    revision: 1
+  url: https://raw.githubusercontent.com/cilium/cilium/v1.18.5/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
