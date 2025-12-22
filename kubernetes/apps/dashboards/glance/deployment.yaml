@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glance
+  namespace: glance
+  labels:
+    app: glance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glance
+  template:
+    metadata:
+      labels:
+        app: glance
+    spec:
+      containers:
+        - name: glance
+          image: glanceapp/glance:latest
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /app/glance.yml
+              subPath: glance.yml
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: glance-config

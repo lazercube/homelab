@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance-config
+  namespace: glance
+data:
+  glance.yml: |
+    pages:
+      - name: Home
+        columns:
+          - size: small
+            widgets:
+              - type: calendar
+              
+              - type: weather
+                location: London, United Kingdom
+              
+              - type: bookmarks
+                groups:
+                  - title: Services
+                    links:
+                      - title: ArgoCD
+                        url: https://argocd.localcloud.network
+                      - title: Grafana
+                        url: https://grafana.localcloud.network
+                      - title: Prometheus
+                        url: https://prometheus.localcloud.network
+                      - title: Hubble UI
+                        url: https://hubble.localcloud.network
+
+          - size: full
+            widgets:
+              - type: repository
+                repository: lazercube/homelab
+
+          - size: small
+            widgets:
+              - type: monitor
+                cache: 1m
+                title: Cluster Services
+                sites:
+                  - title: ArgoCD
+                    url: https://argocd.localcloud.network
+                  - title: Grafana
+                    url: https://grafana.localcloud.network
+                  - title: Prometheus
+                    url: https://prometheus.localcloud.network
+                  - title: Hubble UI
+                    url: https://hubble.localcloud.network

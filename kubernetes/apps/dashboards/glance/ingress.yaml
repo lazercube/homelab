@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: glance
+  namespace: glance
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: home.localcloud.network
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: glance
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - home.localcloud.network
+      secretName: glance-tls
