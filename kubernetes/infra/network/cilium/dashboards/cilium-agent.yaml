@@ -1,0 +1,15 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-agent
+  namespace: kube-system
+spec:
+  allowCrossNamespaceImport: true
+  folder: Cilium
+  resyncPeriod: 10m
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  grafanaCom:
+    id: 16611
+    revision: 1

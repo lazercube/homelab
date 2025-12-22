@@ -5,5 +5,5 @@ resources:
   - ip-pool.yaml
   - announce.yaml
   - ingress.yaml
-  - dashboards.yaml
   - application.yaml
+  - dashboards/
