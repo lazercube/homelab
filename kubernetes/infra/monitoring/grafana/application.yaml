@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://grafana.github.io/grafana-operator
-    chart: grafana-operator
-    targetRevision: v5.15.1
+    repoURL: https://github.com/lazercube/homelab
+    path: kubernetes/infra/monitoring/grafana
+    targetRevision: HEAD
   
   destination:
     server: https://kubernetes.default.svc
@@ -20,3 +20,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - Replace=true
