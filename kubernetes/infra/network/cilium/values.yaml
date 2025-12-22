@@ -34,6 +34,10 @@ securityContext:
 
 operator:
   rollOutPods: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
   resources:
     limits:
       cpu: 200m
@@ -72,9 +76,28 @@ ingressController:
 
 hubble:
   enabled: true
+  metrics:
+    enabled:
+      - dns
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - http
+    serviceMonitor:
+      enabled: true
   relay:
     enabled: true
     rollOutPods: true
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
   ui:
     enabled: true
     rollOutPods: true
+
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
