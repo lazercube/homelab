@@ -10,4 +10,6 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-  url: https://raw.githubusercontent.com/argoproj/argo-cd/refs/heads/master/examples/dashboard.json
+  grafanaCom:
+    id: 14584
+    revision: 1
