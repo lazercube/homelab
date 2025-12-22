@@ -23,6 +23,7 @@ spec:
   
   persistentVolumeClaim:
     spec:
+      storageClassName: proxmox-bulk
       accessModes:
         - ReadWriteOnce
       resources:

@@ -34,6 +34,7 @@ spec:
             storageSpec:
               volumeClaimTemplate:
                 spec:
+                  storageClassName: proxmox-fast
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:
