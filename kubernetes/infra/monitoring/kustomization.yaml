@@ -3,5 +3,6 @@ kind: Kustomization
 
 # Monitoring infrastructure components
 resources:
+  - namespace.yaml
   - prometheus/
   - grafana/
