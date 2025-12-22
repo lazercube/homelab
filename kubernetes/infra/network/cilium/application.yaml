@@ -20,6 +20,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
@@ -42,3 +45,7 @@ spec:
       jsonPointers:
         - /spec/clusterIP
         - /spec/clusterIPs
+    - group: ""
+      kind: Endpoints
+      name: cilium-ingress
+      namespace: kube-system
