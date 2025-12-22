@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 67.4.0
+    helm:
+      valuesObject:
+        # Disable Grafana (deployed separately)
+        grafana:
+          enabled: false
+        
+        # Prometheus configuration
+        prometheus:
+          ingress:
+            enabled: true
+            ingressClassName: cilium
+            hosts:
+              - prometheus.localcloud.network
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+            tls:
+              - secretName: prometheus-tls
+                hosts:
+                  - prometheus.localcloud.network
+          
+          prometheusSpec:
+            retention: 30d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 25Gi
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

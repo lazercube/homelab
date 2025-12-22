@@ -24,6 +24,9 @@ case "$NAME" in
   cloudflare-dns)
     SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/network/dns"
     ;;
+  grafana-admin)
+    SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/monitoring/grafana"
+    ;;
   *)
     # Default fallback for other secrets
     SEALED_OUT_DIR="${ROOT_DIR}/kubernetes/infra/${NAME}"
@@ -67,6 +70,14 @@ case "$NAME" in
     if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
       echo "ERROR: CLOUDFLARE_API_TOKEN environment variable not set."
       echo "Set it with: export CLOUDFLARE_API_TOKEN='your-token-here'"
+      exit 1
+    fi
+    ;;
+  grafana-admin)
+    # Reads GRAFANA_ADMIN_PASSWORD from environment
+    if [ -z "$GRAFANA_ADMIN_PASSWORD" ]; then
+      echo "ERROR: GRAFANA_ADMIN_PASSWORD environment variable not set."
+      echo "Set it with: export GRAFANA_ADMIN_PASSWORD='your-password-here'"
       exit 1
     fi
     ;;
