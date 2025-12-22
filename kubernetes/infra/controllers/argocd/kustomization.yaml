@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - ingress.yaml
-  - servicemonitor.yaml
+  - monitors/
   - dashboard.yaml
