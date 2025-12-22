@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - application.yaml
   - grafana.yaml
-  - datasources/prometheus-operated.yaml
-  - datasources/alertmanager-operated.yaml
   - ingress.yaml
   - sealedsecret-grafana-admin.yaml
+  - datasources/prometheus-operated.yaml
+  - datasources/alertmanager-operated.yaml
