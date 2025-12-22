@@ -3,6 +3,8 @@ kind: ServiceMonitor
 metadata:
   name: argocd-applicationset-controller
   namespace: monitoring
+  labels:
+    release: prometheus
 spec:
   selector:
     matchLabels:

@@ -86,6 +86,8 @@ hubble:
       - http
     serviceMonitor:
       enabled: true
+      labels:
+        release: prometheus
   relay:
     enabled: true
     rollOutPods: true
@@ -93,6 +95,8 @@ hubble:
       enabled: true
       serviceMonitor:
         enabled: true
+        labels:
+          release: prometheus
   ui:
     enabled: true
     rollOutPods: true
@@ -101,3 +105,5 @@ prometheus:
   enabled: true
   serviceMonitor:
     enabled: true
+    labels:
+      release: prometheus
