@@ -1,7 +1,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-cluster
+  name: k8s-system-coredns
   namespace: monitoring
 spec:
   allowCrossNamespaceImport: true
@@ -10,6 +10,4 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-  grafanaCom:
-    id: 15661
-    revision: 2
+  url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/v3.0.1/dashboards/k8s-system-coredns.json

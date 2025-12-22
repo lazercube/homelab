@@ -7,7 +7,6 @@ resources:
   - ingress.yaml
   - sealedsecret-grafana-admin.yaml
   - datasources/
-  - dashboards/
 
 patches:
   - target:
