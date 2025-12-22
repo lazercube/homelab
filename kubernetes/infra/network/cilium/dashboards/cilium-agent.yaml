@@ -11,5 +11,5 @@ spec:
     matchLabels:
       dashboards: grafana
   grafanaCom:
-    id: 16611
+    id: 20625
     revision: 1
