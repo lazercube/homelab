@@ -7,6 +7,7 @@ resource "proxmox_virtual_environment_role" "csi" {
     "Datastore.Allocate",
     "Datastore.AllocateSpace",
     "Datastore.Audit",
+    "Sys.Audit",
   ]
 }
 
