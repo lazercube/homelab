@@ -12,32 +12,15 @@ data:
             widgets:
               - type: calendar
               
-              - type: weather
-                location: London, United Kingdom
-              
-              - type: bookmarks
-                groups:
-                  - title: Services
-                    links:
-                      - title: ArgoCD
-                        url: https://argocd.localcloud.network
-                      - title: Grafana
-                        url: https://grafana.localcloud.network
-                      - title: Prometheus
-                        url: https://prometheus.localcloud.network
-                      - title: Hubble
-                        url: https://hubble.localcloud.network
+              - type: repository
+                repository: lazercube/homelab
+                commitCount: 3
 
           - size: full
             widgets:
-              - type: repository
-                repository: lazercube/homelab
-
-          - size: small
-            widgets:
               - type: monitor
                 cache: 1m
-                title: Cluster Services
+                title: Services
                 sites:
                   - title: ArgoCD
                     url: https://argocd.localcloud.network
@@ -47,3 +30,8 @@ data:
                     url: https://prometheus.localcloud.network
                   - title: Hubble UI
                     url: https://hubble.localcloud.network
+
+          - size: small
+            widgets:
+              - type: weather
+                location: Chandler's Ford, United Kingdom
