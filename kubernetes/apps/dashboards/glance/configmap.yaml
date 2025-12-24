@@ -28,7 +28,7 @@ data:
                     url: https://grafana.localcloud.network
                   - title: Prometheus
                     url: https://prometheus.localcloud.network
-                  - title: Hubble UI
+                  - title: Hubble
                     url: https://hubble.localcloud.network
 
           - size: small
