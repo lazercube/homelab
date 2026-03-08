@@ -87,22 +87,3 @@ resource "talos_cluster_kubeconfig" "this" {
     read = "2m"
   }
 }
-
-# Rolling node upgrade — set update = true on a node to trigger an upgrade.
-# Upgrade workers before control plane to avoid losing the API endpoint.
-resource "talos_machine_upgrade" "this" {
-  for_each = { for k, v in var.nodes : k => v if v.update }
-
-  depends_on = [
-    talos_machine_configuration_apply.this,
-    data.talos_cluster_health.this,
-  ]
-
-  client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = each.value.ip
-  image                = data.talos_image_factory_urls.update.urls.installer
-
-  timeouts = {
-    update = "10m"
-  }
-}
