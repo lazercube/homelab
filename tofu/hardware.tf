@@ -1,4 +1,4 @@
-# This file defines hardware mappings for the Proxmox Virtual Environment provider.
+# Hardware mappings for the Proxmox Virtual Environment provider.
 resource "proxmox_virtual_environment_hardware_mapping_pci" "igpu" {
   name    = "iGPU"
   comment = "AMD Radeon 780M (Phoenix3) - R7 PRO 8845HS integrated GPU"
