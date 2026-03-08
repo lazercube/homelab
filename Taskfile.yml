@@ -165,10 +165,16 @@ tasks:
           exit 1;
         fi
         echo "Installing Argo CD..."
-        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/bootstrap/argocd
-        
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/bootstrap/argocd --server-side --force-conflicts
+
         echo "Waiting for Argo CD CRDs to be established..."
-        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl wait --for condition=established --timeout=60s crd/applications.argoproj.io
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl wait --for condition=established --timeout=120s \
+          crd/applications.argoproj.io \
+          crd/applicationsets.argoproj.io \
+          crd/appprojects.argoproj.io
+
+        echo "Re-applying to ensure ApplicationSets are created..."
+        KUBECONFIG="{{.KUBECONFIG_FILE}}" kubectl apply -k kubernetes/bootstrap/argocd --server-side --force-conflicts
         
         echo "Argo CD bootstrapped."
         echo "Argo CD will now sync:"
