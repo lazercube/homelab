@@ -6,7 +6,6 @@ module "talos" {
   image = {
     version           = "v1.12.4"
     schematic         = file("${path.module}/talos/image/schematic.yaml")
-    update_version    = "v1.12.4"
     factory_url       = "https://factory.talos.dev"
     arch              = "amd64"
     platform          = "nocloud"

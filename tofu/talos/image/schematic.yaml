@@ -1,6 +1,6 @@
 customization:
   systemExtensions:
     officialExtensions:
-      - siderolabs/nfs
+      - siderolabs/nfs-utils
       - siderolabs/amdgpu-firmware
       - siderolabs/qemu-guest-agent
