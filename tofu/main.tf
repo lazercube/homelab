@@ -68,6 +68,24 @@ module "talos" {
   proxmox_nodes = var.proxmox_nodes
 }
 
+module "volumes" {
+  depends_on = [module.talos]
+  source     = "./bootstrap/volumes"
+
+  providers = {
+    restapi    = restapi
+    kubernetes = kubernetes
+  }
+
+  proxmox_api = {
+    endpoint     = var.proxmox_cluster.endpoint
+    insecure     = var.proxmox_cluster.insecure
+    cluster_name = var.proxmox_cluster.cluster_name
+  }
+
+  volumes = var.kubernetes_volumes
+}
+
 module "proxmox_csi_auth" {
   source = "./bootstrap/proxmox-csi-auth"
 

@@ -6,12 +6,6 @@ variable "proxmox_api" {
   })
 }
 
-variable "proxmox_api_token" {
-  description = "Proxmox API token. Set via TF_VAR_proxmox_api_token."
-  type        = string
-  sensitive   = true
-}
-
 variable "volumes" {
   type = map(object({
     node               = string
