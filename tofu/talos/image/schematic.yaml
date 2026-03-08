@@ -1,6 +1,6 @@
 customization:
   systemExtensions:
     officialExtensions:
-      - siderolabs/i915-ucode
-      - siderolabs/intel-ucode
+      - siderolabs/nfs
+      - siderolabs/amdgpu-firmware
       - siderolabs/qemu-guest-agent
