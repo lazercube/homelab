@@ -4,8 +4,9 @@ module "talos" {
 
   # Talos image config
   image = {
-    version           = "v1.11.5"
+    version           = "v1.12.4"
     schematic         = file("${path.module}/talos/image/schematic.yaml")
+    update_version    = "v1.12.4"
     factory_url       = "https://factory.talos.dev"
     arch              = "amd64"
     platform          = "nocloud"
@@ -23,7 +24,7 @@ module "talos" {
     name            = "talos"
     endpoint        = "192.168.30.100" # Control plane IP
     gateway         = "192.168.30.1"   # your LAN gateway
-    talos_version   = "v1.11.5"
+    talos_version   = "v1.12.4"
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
 
@@ -38,8 +39,6 @@ module "talos" {
       cpu           = 4
       ram_dedicated = 6144
       disk          = 64
-      # datastore_id optional (we default from proxmox_nodes)
-      # update/igpu use defaults
     }
 
     "work-00" = {
@@ -51,6 +50,7 @@ module "talos" {
       cpu           = 4
       ram_dedicated = 11264
       disk          = 128
+      igpu          = true
     }
 
     "work-01" = {

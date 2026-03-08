@@ -6,12 +6,23 @@ locals {
   schematic   = var.image.schematic
 
   schematic_id = jsondecode(data.http.schematic_id.response_body)["id"]
+
+  # Upgrade image — falls back to current schematic/version if overrides not set
+  upgrade_schematic_id = var.image.update_schematic != null ? jsondecode(data.http.update_schematic_id[0].response_body)["id"] : local.schematic_id
+  upgrade_version      = coalesce(var.image.update_version, local.version)
 }
 
 data "http" "schematic_id" {
   url          = "${local.factory_url}/schematics"
   method       = "POST"
   request_body = local.schematic
+}
+
+data "http" "update_schematic_id" {
+  count        = var.image.update_schematic != null ? 1 : 0
+  url          = "${local.factory_url}/schematics"
+  method       = "POST"
+  request_body = var.image.update_schematic
 }
 
 resource "proxmox_virtual_environment_download_file" "talos_image" {

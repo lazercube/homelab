@@ -87,3 +87,37 @@ resource "talos_cluster_kubeconfig" "this" {
     read = "2m"
   }
 }
+
+# Rolling upgrade — workers first, then control plane
+# Set update = true on a node in main.tf to include it in the next upgrade
+# Triggers re-run whenever the upgrade image URL changes (new schematic or version)
+resource "null_resource" "upgrade_workers" {
+  for_each = { for k, v in var.nodes : k => v if v.update && v.machine_type == "worker" }
+
+  depends_on = [talos_machine_configuration_apply.this]
+
+  triggers = {
+    image = "${local.factory_url}/installer/${local.upgrade_schematic_id}/${local.upgrade_version}"
+  }
+
+  provisioner "local-exec" {
+    command = "talosctl upgrade --nodes ${each.value.ip} --image ${local.factory_url}/installer/${local.upgrade_schematic_id}/${local.upgrade_version} --talosconfig ${path.root}/talosconfig --wait"
+  }
+}
+
+resource "null_resource" "upgrade_controlplane" {
+  for_each = { for k, v in var.nodes : k => v if v.update && v.machine_type == "controlplane" }
+
+  depends_on = [
+    talos_machine_configuration_apply.this,
+    null_resource.upgrade_workers,
+  ]
+
+  triggers = {
+    image = "${local.factory_url}/installer/${local.upgrade_schematic_id}/${local.upgrade_version}"
+  }
+
+  provisioner "local-exec" {
+    command = "talosctl upgrade --nodes ${each.value.ip} --image ${local.factory_url}/installer/${local.upgrade_schematic_id}/${local.upgrade_version} --talosconfig ${path.root}/talosconfig --wait"
+  }
+}
