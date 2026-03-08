@@ -6,7 +6,6 @@ module "talos" {
   image = {
     version           = "v1.11.5"
     schematic         = file("${path.module}/talos/image/schematic.yaml")
-    factory_url       = "https://factory.talos.dev"
     arch              = "amd64"
     platform          = "nocloud"
     proxmox_datastore = "isos" # where the image itself gets downloaded
