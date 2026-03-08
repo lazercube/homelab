@@ -1,7 +1,8 @@
 version: "3"
 
 vars:
-  TOFU_DIR: "tofu"
+  TOFU_DIR: "tofu/kubernetes"
+  TOFU_PROXMOX_DIR: "tofu/proxmox"
   KUBECONFIG_FILE: "{{.TOFU_DIR}}/kubeconfig"
   TALOSCONFIG_FILE: "{{.TOFU_DIR}}/talosconfig"
 
@@ -21,11 +22,16 @@ tasks:
         echo "  - .envrc with TF_VAR_proxmox_api_token set (direnv allow)"
         echo "  - templates/secrets/proxmox-csi-secret.yaml.tmpl present"
         echo
-        echo "Infra (OpenTofu / Talos / Proxmox):"
-        echo "  task infra:init            - Init OpenTofu (providers, backend)"
+        echo "Proxmox (OpenTofu / iGPU / LXC):"
+        echo "  task proxmox:init          - Init OpenTofu in tofu/proxmox"
+        echo "  task proxmox:plan          - Plan Proxmox-level changes"
+        echo "  task proxmox:apply         - Apply Proxmox-level changes (iGPU mapping, LXC)"
+        echo
+        echo "Infra (OpenTofu / Talos / Kubernetes):"
+        echo "  task infra:init            - Init OpenTofu in tofu/kubernetes"
         echo "  task infra:validate        - Check fmt + validate configuration"
         echo "  task infra:plan            - Plan OpenTofu changes"
-        echo "  task infra:apply           - Apply OpenTofu (Proxmox, Talos, Cilium, CSI auth)"
+        echo "  task infra:apply           - Apply OpenTofu (Talos, volumes, CSI auth)"
         echo "  task infra:configs         - Extract talosconfig + kubeconfig from outputs"
         echo "  task csi:rotate-token      - Rotate Proxmox CSI token and reseal secret"
         echo
@@ -61,10 +67,32 @@ tasks:
     silent: true
 
   infra:init:
-    desc: Init OpenTofu in ./tofu
+    desc: Init OpenTofu in tofu/kubernetes
     dir: "{{.TOFU_DIR}}"
     cmds:
       - tofu init
+    silent: true
+
+  proxmox:init:
+    desc: Init OpenTofu in tofu/proxmox
+    dir: "{{.TOFU_PROXMOX_DIR}}"
+    cmds:
+      - tofu init
+    silent: true
+
+  proxmox:plan:
+    desc: Plan Proxmox-level changes (iGPU mapping, LXC)
+    dir: "{{.TOFU_PROXMOX_DIR}}"
+    cmds:
+      - tofu plan
+    silent: true
+
+  proxmox:apply:
+    deps: [env:check]
+    desc: Apply Proxmox-level changes (iGPU mapping, LXC)
+    dir: "{{.TOFU_PROXMOX_DIR}}"
+    cmds:
+      - tofu apply
     silent: true
 
   infra:validate:
@@ -92,10 +120,9 @@ tasks:
 
   infra:configs:
     desc: Write talosconfig + kubeconfig from OpenTofu outputs
-    dir: "{{.TOFU_DIR}}"
     cmds:
-      - tofu output -raw talosconfig > ../{{.TALOSCONFIG_FILE}}
-      - tofu output -raw kubeconfig  > ../{{.KUBECONFIG_FILE}}
+      - tofu -chdir={{.TOFU_DIR}} output -raw talosconfig > {{.TALOSCONFIG_FILE}}
+      - tofu -chdir={{.TOFU_DIR}} output -raw kubeconfig  > {{.KUBECONFIG_FILE}}
       - |
         echo "Wrote:"
         echo "  TALOSCONFIG={{.TALOSCONFIG_FILE}}"
