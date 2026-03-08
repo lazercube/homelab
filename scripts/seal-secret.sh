@@ -57,7 +57,7 @@ case "$NAME" in
     export REGION="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_csi_auth_region)"
     export PROXMOX_API_URL="$(cd "${ROOT_DIR}/tofu" && tofu output -raw proxmox_endpoint)"
     ;;
-  cloudflare-api-token)
+  cloudflare-cert-manager)
     # Reads CLOUDFLARE_API_TOKEN from environment
     if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
       echo "ERROR: CLOUDFLARE_API_TOKEN environment variable not set."
@@ -65,7 +65,7 @@ case "$NAME" in
       exit 1
     fi
     ;;
-  cloudflare-api-token-external-dns)
+  cloudflare-dns)
     # Reads CLOUDFLARE_API_TOKEN from environment
     if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
       echo "ERROR: CLOUDFLARE_API_TOKEN environment variable not set."
