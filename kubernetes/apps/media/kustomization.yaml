@@ -8,3 +8,5 @@ resources:
   - jellyseerr/
   - radarr/
   - sonarr/
+  - qbittorrent/
+  - qui/
