@@ -32,6 +32,16 @@ data:
                     url: https://hubble.localcloud.network
                   - title: Jellyfin
                     url: https://jellyfin.localcloud.network
+                  - title: Jellyseerr
+                    url: https://jellyseerr.localcloud.network
+                  - title: Radarr
+                    url: https://radarr.localcloud.network
+                  - title: Sonarr
+                    url: https://sonarr.localcloud.network
+                  - title: qBittorrent
+                    url: https://qbittorrent.localcloud.network
+                  - title: QUI
+                    url: https://qui.localcloud.network
 
           - size: small
             widgets:
