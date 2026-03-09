@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: filebrowser
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: proxmox-fast
+  volumeName: pv-filebrowser
+  resources:
+    requests:
+      storage: 1Gi

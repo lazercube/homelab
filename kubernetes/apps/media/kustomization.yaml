@@ -10,3 +10,4 @@ resources:
   - sonarr/
   - qbittorrent/
   - qui/
+  - filebrowser/

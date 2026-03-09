@@ -42,6 +42,8 @@ data:
                     url: https://qbittorrent.localcloud.network
                   - title: QUI
                     url: https://qui.localcloud.network
+                  - title: FileBrowser
+                    url: https://files.localcloud.network
 
           - size: small
             widgets:

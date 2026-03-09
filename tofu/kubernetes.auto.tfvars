@@ -47,4 +47,10 @@ kubernetes_volumes = {
     storage            = "vmstore"
     storage_class_name = "proxmox-fast"
   }
+  "pv-filebrowser" = {
+    node               = "draco"
+    size               = "1Gi"
+    storage            = "vmstore"
+    storage_class_name = "proxmox-fast"
+  }
 }
