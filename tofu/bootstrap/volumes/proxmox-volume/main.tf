@@ -1,5 +1,7 @@
 locals {
-  filename = "vm-${var.volume.vmid}-${var.volume.name}"
+  filename   = "vm-${var.volume.vmid}-${var.volume.name}"
+  # Proxmox expects "5G" not "5Gi" — strip any binary suffix (Ki, Mi, Gi, Ti)
+  proxmox_size = replace(var.volume.size, "/([KMGT])i$/", "$1")
 }
 
 resource "restapi_object" "proxmox-volume" {
@@ -9,7 +11,7 @@ resource "restapi_object" "proxmox-volume" {
   data = jsonencode({
     vmid     = var.volume.vmid
     filename = local.filename
-    size     = var.volume.size
+    size     = local.proxmox_size
     format   = var.volume.format
   })
 
