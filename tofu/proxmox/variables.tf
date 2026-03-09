@@ -10,6 +10,7 @@ variable "lab_network" {
   description = "Shared network settings for the lab subnet"
   type = object({
     gateway = string
+    subnet  = string
   })
 }
 

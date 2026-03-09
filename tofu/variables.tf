@@ -42,6 +42,7 @@ variable "lab_network" {
   description = "Shared network settings for the lab subnet"
   type = object({
     gateway = string # IPv4 gateway, e.g. "192.168.30.1"
+    subnet  = string # CIDR subnet, e.g. "192.168.30.0/24"
   })
 }
 
