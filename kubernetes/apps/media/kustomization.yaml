@@ -5,3 +5,9 @@ resources:
   - namespace.yaml
   - volumes.yaml
   - jellyfin/
+  - jellyseerr/
+  - radarr/
+  - sonarr/
+  - qbittorrent/
+  - qui/
+  - filebrowser/

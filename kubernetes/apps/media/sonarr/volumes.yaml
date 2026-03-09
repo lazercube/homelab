@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyfin
+  name: sonarr
   namespace: media
 spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: proxmox-fast
-  volumeName: pv-jellyfin
+  volumeName: pv-sonarr
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi
