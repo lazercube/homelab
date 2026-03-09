@@ -43,7 +43,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: radarr-config
+            claimName: radarr
         - name: media
           persistentVolumeClaim:
             claimName: nfs-media

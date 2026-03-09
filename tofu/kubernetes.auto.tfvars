@@ -11,6 +11,12 @@ kubernetes_volumes = {
     storage            = "bulkzfs"
     storage_class_name = "proxmox-bulk"
   }
+  "pv-jellyfin" = {
+    node               = "draco"
+    size               = "20Gi"
+    storage            = "vmstore"
+    storage_class_name = "proxmox-fast"
+  }
   "pv-jellyseerr" = {
     node               = "draco"
     size               = "5Gi"

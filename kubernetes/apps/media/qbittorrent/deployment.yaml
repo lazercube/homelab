@@ -51,7 +51,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: qbittorrent-config
+            claimName: qbittorrent
         - name: media
           persistentVolumeClaim:
             claimName: nfs-media
