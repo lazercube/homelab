@@ -40,7 +40,7 @@ module "talos" {
       vm_id         = 800
       cpu           = 4
       ram_dedicated = 6144
-      disk          = 64
+      disk          = 20
     }
 
     "work-00" = {
@@ -51,7 +51,7 @@ module "talos" {
       vm_id         = 810
       cpu           = 4
       ram_dedicated = 11264
-      disk          = 128
+      disk          = 20
       igpu          = true
     }
 
@@ -63,7 +63,7 @@ module "talos" {
       vm_id         = 811
       cpu           = 4
       ram_dedicated = 11264
-      disk          = 128
+      disk          = 20
     }
   }
 
