@@ -45,6 +45,8 @@ spec:
               readOnly: true
             - name: dri
               mountPath: /dev/dri
+            - name: transcode
+              mountPath: /config/transcodes
           resources:
             requests:
               cpu: 500m
@@ -61,3 +63,6 @@ spec:
         - name: dri
           hostPath:
             path: /dev/dri
+        - name: transcode
+          emptyDir:
+            sizeLimit: 20Gi
