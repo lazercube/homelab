@@ -17,14 +17,16 @@ spec:
     spec:
       containers:
         - name: qui
-          image: ghcr.io/getqui/qui:latest
+          image: ghcr.io/autobrr/qui:latest
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 7476
               protocol: TCP
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: media
+              mountPath: /media
           resources:
             requests:
               cpu: 100m
@@ -35,3 +37,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: qui
+        - name: media
+          persistentVolumeClaim:
+            claimName: nfs-media
