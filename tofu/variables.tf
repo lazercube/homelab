@@ -16,12 +16,26 @@ variable "proxmox_api_token" {
   sensitive   = true
 }
 
+variable "proxmox_root_user" {
+  description = "Proxmox user for privileged operations (e.g. root@pam)"
+  type        = string
+  default     = "root@pam"
+}
+
+# Required for operations that Proxmox restricts to root@pam (e.g. bind mounts)
+variable "proxmox_root_password" {
+  description = "Password for root@pam on Proxmox (read from env / .envrc)"
+  type        = string
+  sensitive   = true
+}
+
 # Individual Proxmox nodes
 variable "proxmox_nodes" {
   description = "Individual Proxmox nodes in the cluster"
   type = map(object({
     name         = string # node name in Proxmox UI, e.g. "pve" or "pve-01"
     datastore_id = string # default datastore for VM disks on this node, e.g. "vmstore"
+    ip           = string # hostname or IP for this node, used for provisioning and SSH access.
   }))
 }
 
@@ -34,6 +48,41 @@ variable "kubernetes_volumes" {
     storage_class_name = optional(string, "proxmox-csi")
     vmid               = optional(number, 9999)
     format             = optional(string, "raw")
+  }))
+  default = {}
+}
+
+variable "lab_network" {
+  description = "Shared network settings for the lab subnet"
+  type = object({
+    gateway = string # IPv4 gateway, e.g. "192.168.30.1"
+    subnet  = string # CIDR subnet, e.g. "192.168.30.0/24"
+  })
+}
+
+variable "lxc_containers" {
+  description = "LXC containers to provision on Proxmox"
+  type = map(object({
+    proxmox_node    = string
+    vm_id           = number
+    description     = optional(string, "")
+    tags            = optional(list(string), [])
+    unprivileged    = optional(bool, true)
+    ip              = string       # CIDR, e.g. "192.168.30.120/24"
+    ssh_public_keys = list(string)
+    datastore_id    = optional(string, "vmstore")
+    disk            = optional(number, 8)  # GB
+    cpu             = optional(number, 2)
+    ram             = optional(number, 512)
+    swap            = optional(number, 512)
+    os_type         = optional(string, "debian")
+    template_url    = string
+    startup_order      = optional(number, 1)
+    startup_up_delay   = optional(number, 30)
+    mount_points = optional(list(object({
+      host_path      = string
+      container_path = string
+    })), [])
   }))
   default = {}
 }

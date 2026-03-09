@@ -30,6 +30,8 @@ data:
                     url: https://prometheus.localcloud.network
                   - title: Hubble
                     url: https://hubble.localcloud.network
+                  - title: Jellyfin
+                    url: https://jellyfin.localcloud.network
 
           - size: small
             widgets:

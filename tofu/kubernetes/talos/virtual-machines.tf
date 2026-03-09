@@ -47,7 +47,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     discard      = "on"
     ssd          = true
     file_format  = "raw"
-    size         = 20
+    size         = each.value.disk
 
     # IMPORTANT: this must be on a datastore accessible by that Proxmox node
     file_id = proxmox_virtual_environment_download_file.talos_image.id

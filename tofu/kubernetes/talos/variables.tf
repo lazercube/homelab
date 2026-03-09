@@ -43,6 +43,7 @@ variable "nodes" {
     vm_id        = number
     cpu          = number
     ram_dedicated = number
+    disk         = optional(number, 20)
     igpu         = optional(bool, false)
     update       = optional(bool, false)
   }))
