@@ -5,5 +5,5 @@ namespace: csi-proxmox
 
 resources:
   - sealedsecret-proxmox-csi.yaml
-  - storage-class.yaml
+  - volumes.yaml
   - https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/v0.16.0/docs/deploy/proxmox-csi-plugin.yml

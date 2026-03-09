@@ -6,4 +6,3 @@ resources:
   - storage/
   - network/
   - monitoring/
-  - namespaces/
