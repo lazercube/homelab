@@ -16,12 +16,26 @@ variable "proxmox_api_token" {
   sensitive   = true
 }
 
+variable "proxmox_root_user" {
+  description = "Proxmox user for privileged operations (e.g. root@pam)"
+  type        = string
+  default     = "root@pam"
+}
+
+# Required for operations that Proxmox restricts to root@pam (e.g. bind mounts)
+variable "proxmox_root_password" {
+  description = "Password for root@pam on Proxmox (read from env / .envrc)"
+  type        = string
+  sensitive   = true
+}
+
 # Individual Proxmox nodes
 variable "proxmox_nodes" {
   description = "Individual Proxmox nodes in the cluster"
   type = map(object({
     name         = string # node name in Proxmox UI, e.g. "pve" or "pve-01"
     datastore_id = string # default datastore for VM disks on this node, e.g. "vmstore"
+    ip           = string # hostname or IP for this node, used for provisioning and SSH access.
   }))
 }
 

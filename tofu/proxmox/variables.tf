@@ -3,6 +3,7 @@ variable "proxmox_nodes" {
   type = map(object({
     name         = string
     datastore_id = string
+    ip  = string
   }))
 }
 

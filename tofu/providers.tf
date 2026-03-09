@@ -27,7 +27,9 @@ provider "proxmox" {
   endpoint = var.proxmox_cluster.endpoint
   insecure = var.proxmox_cluster.insecure
 
-  api_token = var.proxmox_api_token
+  # api_token = var.proxmox_api_token
+  username = var.proxmox_root_user
+  password  = var.proxmox_root_password
 
   ssh {
     agent    = true

@@ -85,7 +85,7 @@ resource "proxmox_virtual_environment_container" "this" {
 }
 
 # Run NFS setup on any container tagged "nfs" after first provision.
-# Uses SSH agent auth — ensure your key is loaded in ssh-agent before applying.
+# SSHes into the Proxmox node and uses pct exec — no SSH key needed in the container.
 resource "null_resource" "nfs_setup" {
   for_each = {
     for k, v in var.lxc_containers : k => v
@@ -99,19 +99,19 @@ resource "null_resource" "nfs_setup" {
   depends_on = [proxmox_virtual_environment_container.this]
 
   connection {
-    type  = "ssh"
-    host  = split("/", each.value.ip)[0]
-    user  = "root"
-    agent = true
+    type    = "ssh"
+    host    = var.proxmox_nodes[each.value.proxmox_node].ip
+    user    = "root"
+    agent   = true
+    timeout = "2m"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "apk add --no-cache nfs-utils",
-      "mkdir -p /etc/exports.d",
-      "echo '/media ${var.lab_network.subnet}(rw,sync,no_subtree_check,no_root_squash)' > /etc/exports",
-      "rc-update add nfs",
-      "rc-service nfs start",
+      "pct exec ${each.value.vm_id} -- apk add --no-cache nfs-utils",
+      "pct exec ${each.value.vm_id} -- sh -c 'echo \"/media ${var.lab_network.subnet}(rw,sync,no_subtree_check,no_root_squash)\" > /etc/exports'",
+      "pct exec ${each.value.vm_id} -- rc-update add nfs",
+      "pct exec ${each.value.vm_id} -- rc-service nfs start",
     ]
   }
 }
