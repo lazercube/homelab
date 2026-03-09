@@ -1,14 +1,17 @@
+locals {
+  talos_version        = "v1.12.4"
+  control_plane_ip     = "192.168.30.100"
+  default_proxmox_node = one(keys(var.proxmox_nodes))
+}
+
 module "talos" {
   source    = "./kubernetes/talos"
   providers = { proxmox = proxmox }
 
   # Talos image config
   image = {
-    version           = "v1.12.4"
+    version           = local.talos_version
     schematic         = file("${path.module}/kubernetes/talos/image/schematic.yaml")
-    factory_url       = "https://factory.talos.dev"
-    arch              = "amd64"
-    platform          = "nocloud"
     proxmox_datastore = "isos" # where the image itself gets downloaded
   }
 
@@ -21,18 +24,18 @@ module "talos" {
   # Talos/Kubernetes cluster-level config
   cluster = {
     name            = "talos"
-    endpoint        = "192.168.30.100" # Control plane IP
+    endpoint        = local.control_plane_ip # Control plane IP
     gateway         = var.lab_network.gateway
-    talos_version   = "v1.12.4"
+    talos_version   = local.talos_version
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
 
   # Talos Nodes
   nodes = {
     "ctrl-00" = {
-      proxmox_node  = "draco" # maps to proxmox_nodes key
+      proxmox_node  = local.default_proxmox_node
       machine_type  = "controlplane"
-      ip            = "192.168.30.100"
+      ip            = local.control_plane_ip
       mac_address   = "BC:24:11:2E:C8:00"
       vm_id         = 800
       cpu           = 4
@@ -41,7 +44,7 @@ module "talos" {
     }
 
     "work-00" = {
-      proxmox_node  = "draco"
+      proxmox_node  = local.default_proxmox_node
       machine_type  = "worker"
       ip            = "192.168.30.110"
       mac_address   = "BC:24:11:2E:08:00"
@@ -53,7 +56,7 @@ module "talos" {
     }
 
     "work-01" = {
-      proxmox_node  = "draco"
+      proxmox_node  = local.default_proxmox_node
       machine_type  = "worker"
       ip            = "192.168.30.111"
       mac_address   = "BC:24:11:2E:08:01"
