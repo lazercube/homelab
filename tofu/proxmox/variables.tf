@@ -3,8 +3,14 @@ variable "proxmox_nodes" {
   type = map(object({
     name         = string
     datastore_id = string
-    gateway      = string
   }))
+}
+
+variable "lab_network" {
+  description = "Shared network settings for the lab subnet"
+  type = object({
+    gateway = string
+  })
 }
 
 variable "lxc_containers" {

@@ -1,20 +1,20 @@
 module "talos" {
-  source    = "./talos"
+  source    = "./kubernetes/talos"
   providers = { proxmox = proxmox }
 
   # Talos image config
   image = {
     version           = "v1.12.4"
-    schematic         = file("${path.module}/talos/image/schematic.yaml")
+    schematic         = file("${path.module}/kubernetes/talos/image/schematic.yaml")
     factory_url       = "https://factory.talos.dev"
     arch              = "amd64"
     platform          = "nocloud"
     proxmox_datastore = "isos" # where the image itself gets downloaded
   }
 
-  # Cilium bootstrap (we’ll wire the actual files later)
+  # Cilium bootstrap (we'll wire the actual files later)
   cilium = {
-    install = file("${path.module}/talos/inline-manifests/cilium-install.yaml")
+    install = file("${path.module}/kubernetes/talos/inline-manifests/cilium-install.yaml")
     values  = file("${path.module}/../kubernetes/bootstrap/cilium/values.yaml")
   }
 
@@ -22,7 +22,7 @@ module "talos" {
   cluster = {
     name            = "talos"
     endpoint        = "192.168.30.100" # Control plane IP
-    gateway         = "192.168.30.1"   # your LAN gateway
+    gateway         = var.lab_network.gateway
     talos_version   = "v1.12.4"
     proxmox_cluster = var.proxmox_cluster.cluster_name
   }
@@ -70,7 +70,7 @@ module "talos" {
 
 module "volumes" {
   depends_on = [module.talos]
-  source     = "./bootstrap/volumes"
+  source     = "./kubernetes/bootstrap/volumes"
 
   providers = {
     restapi    = restapi
@@ -87,7 +87,7 @@ module "volumes" {
 }
 
 module "proxmox_csi_auth" {
-  source = "./bootstrap/proxmox-csi-auth"
+  source = "./kubernetes/bootstrap/proxmox-csi-auth"
 
   cluster_name = var.proxmox_cluster.cluster_name
 }
@@ -96,6 +96,7 @@ module "proxmox" {
   source    = "./proxmox"
   providers = { proxmox = proxmox }
 
+  lab_network    = var.lab_network
   proxmox_nodes  = var.proxmox_nodes
   lxc_containers = var.lxc_containers
 }

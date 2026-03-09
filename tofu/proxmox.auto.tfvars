@@ -11,7 +11,6 @@ proxmox_nodes = {
   draco = {
     name         = "draco"
     datastore_id = "vmstore"
-    gateway      = "192.168.30.1"
   }
 }
 

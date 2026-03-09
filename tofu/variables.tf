@@ -22,7 +22,6 @@ variable "proxmox_nodes" {
   type = map(object({
     name         = string # node name in Proxmox UI, e.g. "pve" or "pve-01"
     datastore_id = string # default datastore for VM disks on this node, e.g. "vmstore"
-    gateway      = string # default IPv4 gateway for containers/VMs on this node
   }))
 }
 
@@ -37,6 +36,13 @@ variable "kubernetes_volumes" {
     format             = optional(string, "raw")
   }))
   default = {}
+}
+
+variable "lab_network" {
+  description = "Shared network settings for the lab subnet"
+  type = object({
+    gateway = string # IPv4 gateway, e.g. "192.168.30.1"
+  })
 }
 
 variable "lxc_containers" {

@@ -36,7 +36,7 @@ resource "proxmox_virtual_environment_container" "this" {
     ip_config {
       ipv4 {
         address = each.value.ip
-        gateway = var.proxmox_nodes[each.value.proxmox_node].gateway
+        gateway = var.lab_network.gateway
       }
     }
 
