@@ -91,3 +91,11 @@ module "proxmox_csi_auth" {
 
   cluster_name = var.proxmox_cluster.cluster_name
 }
+
+module "proxmox" {
+  source    = "./proxmox"
+  providers = { proxmox = proxmox }
+
+  proxmox_nodes  = var.proxmox_nodes
+  lxc_containers = var.lxc_containers
+}
