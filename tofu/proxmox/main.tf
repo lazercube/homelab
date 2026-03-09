@@ -110,7 +110,10 @@ resource "null_resource" "nfs_setup" {
     inline = [
       "pct exec ${each.value.vm_id} -- apk add --no-cache nfs-utils",
       "pct exec ${each.value.vm_id} -- sh -c 'echo \"/media ${var.lab_network.subnet}(rw,sync,no_subtree_check,no_root_squash)\" > /etc/exports'",
+      "pct exec ${each.value.vm_id} -- sh -c 'printf MOUNTD_OPTS=\"-p 32767\"\\\\n > /etc/conf.d/nfs'",
       "pct exec ${each.value.vm_id} -- rc-update add nfs",
+      "pct exec ${each.value.vm_id} -- rc-update add rpc.idmapd",
+      "pct exec ${each.value.vm_id} -- rc-service rpc.idmapd start",
       "pct exec ${each.value.vm_id} -- rc-service nfs start",
     ]
   }
