@@ -1,0 +1,15 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: jellyfin
+  namespace: monitoring
+spec:
+  allowCrossNamespaceImport: true
+  folder: Media
+  resyncPeriod: 10m
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  grafanaCom:
+    id: 12390
+    revision: 2
