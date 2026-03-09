@@ -22,9 +22,6 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
-          env:
-            - name: QBITTORRENT_URL
-              value: http://qbittorrent.media.svc.cluster.local
           volumeMounts:
             - name: config
               mountPath: /config
