@@ -10,7 +10,7 @@ resource "proxmox_virtual_environment_download_file" "ct_template" {
 
   node_name    = var.proxmox_nodes[var.lxc_containers[each.key].proxmox_node].name
   content_type = "vztmpl"
-  datastore_id = "local"
+  datastore_id = "templates"
   url          = each.value
   file_name    = basename(each.value)
   overwrite    = false
