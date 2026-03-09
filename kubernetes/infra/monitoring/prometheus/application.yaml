@@ -35,7 +35,8 @@ spec:
             storageSpec:
               volumeClaimTemplate:
                 spec:
-                  storageClassName: proxmox-fast
+                  storageClassName: proxmox-bulk
+                  volumeName: pv-prometheus
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:

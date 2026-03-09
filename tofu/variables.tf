@@ -24,3 +24,16 @@ variable "proxmox_nodes" {
     datastore_id = string # default datastore for VM disks on this node, e.g. "vmstore"
   }))
 }
+
+variable "kubernetes_volumes" {
+  description = "Named persistent volumes to pre-provision on Proxmox and register as Kubernetes PVs"
+  type = map(object({
+    node               = string
+    size               = string
+    storage            = optional(string, "local-zfs")
+    storage_class_name = optional(string, "proxmox-csi")
+    vmid               = optional(number, 9999)
+    format             = optional(string, "raw")
+  }))
+  default = {}
+}
