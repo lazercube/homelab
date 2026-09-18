@@ -48,4 +48,4 @@ data:
           - size: small
             widgets:
               - type: weather
-                location: Chandler's Ford, United Kingdom
+                location: Romsey, United Kingdom
